@@ -5,13 +5,13 @@ from .models import Customer, Loan
 from .serializers import CustomerSerializer, LoanSerializer
 from datetime import date
 
-# 🔢 EMI calculator
+#EMI calculation
 def calculate_emi(principal, rate, tenure):
     monthly_rate = rate / (12 * 100)
     emi = principal * monthly_rate * ((1 + monthly_rate) ** tenure) / (((1 + monthly_rate) ** tenure) - 1)
     return round(emi, 2)
 
-# 🧠 Loan eligibility logic
+#Loan eligibility logic
 def check_loan_eligibility_logic(customer, loan_amount, interest_rate, tenure):
     loans = Loan.objects.filter(customer=customer)
     current_year = date.today().year
@@ -21,7 +21,7 @@ def check_loan_eligibility_logic(customer, loan_amount, interest_rate, tenure):
     loans_this_year = sum([1 for loan in loans if loan.start_date.year == current_year])
     total_loan_volume = sum([loan.loan_amount for loan in loans])
 
-    # 📊 Credit score calculation
+    #Credit score calculation
     credit_score = min(100, (
         past_loans_paid * 10 +
         max(0, 30 - num_loans * 2) +
@@ -33,7 +33,7 @@ def check_loan_eligibility_logic(customer, loan_amount, interest_rate, tenure):
     corrected_rate = interest_rate
     message = ""
 
-    # 🎯 Approval logic
+    #Approval logic
     if credit_score > 50:
         approval = True
     elif 50 >= credit_score > 30 and interest_rate >= 12:
@@ -52,7 +52,7 @@ def check_loan_eligibility_logic(customer, loan_amount, interest_rate, tenure):
 
     monthly_installment = calculate_emi(loan_amount, corrected_rate, tenure)
 
-    # 💸 Check if EMI is affordable
+    
     if (monthly_installment + customer.current_debt) > 0.5 * customer.monthly_salary:
         approval = False
         message = "EMI exceeds 50% of salary"
@@ -64,7 +64,7 @@ def check_loan_eligibility_logic(customer, loan_amount, interest_rate, tenure):
         "message": message
     }
 
-# 🧾 Register Customer
+#Registering Customer
 @api_view(['POST'])
 def register_customer(request):
     data = request.data
@@ -84,7 +84,7 @@ def register_customer(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-# ✅ Check Eligibility
+
 @api_view(['POST'])
 def check_eligibility(request):
     data = request.data
@@ -111,7 +111,7 @@ def check_eligibility(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-# 🏦 Create Loan
+#Loan Creation
 @api_view(['POST'])
 def create_loan(request):
     data = request.data
@@ -159,7 +159,7 @@ def create_loan(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-# 🔍 View Loan by ID
+#Viewing Loan by ID
 @api_view(['GET'])
 def view_loan(request, loan_id):
     try:
@@ -182,7 +182,7 @@ def view_loan(request, loan_id):
     except Loan.DoesNotExist:
         return Response({"error": "Loan not found"}, status=status.HTTP_404_NOT_FOUND)
 
-# 📃 View Loans by Customer ID
+#Viewing Loan by Customer ID
 @api_view(['GET'])
 def view_loans_by_customer(request, customer_id):
     try:
