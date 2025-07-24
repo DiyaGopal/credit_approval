@@ -73,8 +73,8 @@ POST /check-eligibility
 {
   "customer_id": 1,
   "loan_amount": 50000,
-  "interest_rate": 10,
-  "tenure": 12
+  "interest_rate": 16,
+  "tenure": 10
 }
 ```
 
@@ -86,8 +86,8 @@ POST /create-loan
 {
   "customer_id": 1,
   "loan_amount": 50000,
-  "interest_rate": 10,
-  "tenure": 12
+  "interest_rate": 16,
+  "tenure": 10
 }
 ```
 
